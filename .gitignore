@@ -1,0 +1,4 @@
+*.vvp
+*.vcd
+HDL/build
+HDL/core/build
