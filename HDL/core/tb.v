@@ -3,21 +3,21 @@
 `define SIM_TIME 118600
 
 module tb#(
-            parameter UNSIGNED_INPUT_WIDTH = 16,
-            parameter UNSIGNED_OUTPUT_WIDTH = 16,
-            parameter UNSIGNED_INPUT_INT_WIDTH = 7,
-            parameter UNSIGNED_INPUT_FRAC_WIDTH = 8,
-            parameter UNSIGNED_OUTPUT_INT_WIDTH = 7,
-            parameter UNSIGNED_OUTPUT_FRAC_WIDTH = 8,
-            parameter ITERATION_NUMBER = 6,
-            parameter ITERATION_WORD_WIDTH = 32,
-            parameter ITERATION_WORD_INT_WIDTH = 6,
-            parameter ITERATION_WORD_FRAC_WIDTH = 26
-            )();
-   reg                clk;
-   reg                reset;
-   integer            i;
+           parameter UNSIGNED_INPUT_WIDTH = 16,
+           parameter UNSIGNED_OUTPUT_WIDTH = 16,
+           parameter UNSIGNED_INPUT_INT_WIDTH = 7,
+           parameter UNSIGNED_INPUT_FRAC_WIDTH = 8,
+           parameter UNSIGNED_OUTPUT_INT_WIDTH = 7,
+           parameter UNSIGNED_OUTPUT_FRAC_WIDTH = 8,
+           parameter ITERATION_NUMBER = 6,
+           parameter ITERATION_WORD_WIDTH = 32,
+           parameter ITERATION_WORD_INT_WIDTH = 6,
+           parameter ITERATION_WORD_FRAC_WIDTH = 26
+           )();
+   reg               clk;
+   reg               reset;
    initial begin
+      degree_in_reg = 0;
       clk = 0;
       reset = 0;
       $dumpfile("tb.vcd");
@@ -27,23 +27,35 @@ module tb#(
       $dumpvars(0, tb.y_out);
       $dumpvars(0, tb.degree_out);
       $dumpvars(0, tb.degree_in);
-      for(i = 0; i < ITERATION_NUMBER - 1; i = i + 1)
+
+      for(integer i = 0; i < ITERATION_NUMBER + 1; i = i + 1)
         begin
            $dumpvars(0, tb.pipeline.degree_reg[i]);
            $dumpvars(0, tb.pipeline.degree_approx_reg[i]);
            $dumpvars(0, tb.pipeline.x_reg[i]);
            $dumpvars(0, tb.pipeline.y_reg[i]);
+           if (i < ITERATION_NUMBER)
+             $dumpvars(0, tb.pipeline.degree_mem[i]);
         end
       $dumpvars(0, tb.pipeline.k_reg);
+      $dumpvars(0, tb.pipeline.x_correct_reg);
+      $dumpvars(0, tb.pipeline.y_correct_reg);
+      $dumpvars(0, tb.pipeline.y_enlarge_reg);
+      $dumpvars(0, tb.pipeline.x_enlarge_reg);
       #5 reset = 1;
       # `SIM_TIME $finish;
    end
    always #10 clk = !clk;
+   reg [UNSIGNED_INPUT_WIDTH - 1 : 0] degree_in_reg;
+   always @ (posedge clk)
+     begin
+        degree_in_reg <= degree_in_reg + 16'b0000000000010000;
+     end
    wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] degree_out;
    wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] x_out;
    wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] y_out;
    wire [UNSIGNED_INPUT_WIDTH - 1 : 0]  degree_in;
-   assign degree_in = 0010010100000000;
+   assign degree_in = degree_in_reg;
    pipeline pipeline(/*AUTOINST*/
                      // Outputs
                      .degree_out        (degree_out),
