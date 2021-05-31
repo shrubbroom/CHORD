@@ -11,8 +11,10 @@ module tb#(
            parameter UNSIGNED_OUTPUT_FRAC_WIDTH = 8,
            parameter ITERATION_NUMBER = 6,
            parameter ITERATION_WORD_WIDTH = 32,
-           parameter ITERATION_WORD_INT_WIDTH = 6,
-           parameter ITERATION_WORD_FRAC_WIDTH = 26
+           parameter ITERATION_WORD_INT_WIDTH = 12,
+           parameter ITERATION_WORD_FRAC_WIDTH = 20,
+           parameter SECTOR_FLAG_WIDTH = 2
+
            )();
    reg               clk;
    reg               reset;
@@ -55,14 +57,29 @@ module tb#(
    wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] x_out;
    wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] y_out;
    wire [UNSIGNED_INPUT_WIDTH - 1 : 0]  degree_in;
+   wire [SECTOR_FLAG_WIDTH - 1 : 0]     sector_in;
+   wire [SECTOR_FLAG_WIDTH - 1 : 0]     sector_out;
+   wire                                 arctan_en_in;
+   wire                                 arctan_en_out;
+   wire [UNSIGNED_INPUT_WIDTH - 1 : 0]  x_in;
+   wire [UNSIGNED_INPUT_WIDTH - 1 : 0]  y_in;
    assign degree_in = degree_in_reg;
+   assign arctan_en_in = 1;
+   assign x_in = 16'b0000000100000000;
+   assign y_in = 16'b0000000110111011;
    pipeline pipeline(/*AUTOINST*/
                      // Outputs
                      .degree_out        (degree_out),
                      .x_out             (x_out),
                      .y_out             (y_out),
+                     .sector_out        (sector_out),
+                     .arctan_en_out     (arctan_en_out),
                      // Inputs
                      .clk               (clk),
                      .reset             (reset),
-                     .degree_in         (degree_in));
+                     .degree_in         (degree_in),
+                     .x_in              (x_in),
+                     .y_in              (y_in),
+                     .sector_in         (sector_in),
+                     .arctan_en_in      (arctan_en_in));
 endmodule // tb
