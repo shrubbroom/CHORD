@@ -1,0 +1,19 @@
+name: verilog
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Yosys and iverilog
+      run: sudo apt-get install yosys iverilog -y
+    - name: iverilog test
+      run: iverilog -o top.vcd ./HDL/core/top.v
+    - name: yosys test
+      run: yosys -p "hierarchy -check; proc;" ./HDL/core/top.v
