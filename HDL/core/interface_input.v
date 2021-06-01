@@ -15,7 +15,7 @@ module interface_input #(
                            input wire                                       rst,
                            input wire signed [UNSIGNED_INPUT_WIDTH - 1 : 0] degree_in,
                            output reg [UNSIGNED_OUTPUT_WIDTH - 1 : 0]       degree_out,
-                           out put wire [1:0] quadrant
+                           output wire [1:0]                                quadrant
                            );
 
    parameter                                                                S1=2'b00;
