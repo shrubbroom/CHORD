@@ -5,3 +5,5 @@
 gen*
 HDL/build
 HDL/core/build
+TAGS
+.vscode
