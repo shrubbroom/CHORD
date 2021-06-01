@@ -8,6 +8,8 @@ jobs:
   test:
 
     runs-on: ubuntu-latest
+    env:
+      core: ./HDL/core
 
     steps:
     - uses: actions/checkout@v2
@@ -15,5 +17,7 @@ jobs:
       run: sudo apt-get install yosys iverilog -y
     - name: iverilog test
       run: iverilog -o top.vcd ./HDL/core/top.v
+      working-directory: ${{env.core}}
     - name: yosys test
       run: yosys -p "hierarchy -check; proc;" ./HDL/core/top.v
+      working-directory: ${{env.core}}
