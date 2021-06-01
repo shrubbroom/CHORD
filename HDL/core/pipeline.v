@@ -20,11 +20,13 @@ module pipeline#(
 
                    input wire [SECTOR_FLAG_WIDTH - 1 : 0]      sector_in,
                    input wire                                  arctan_en_in,
+                   input wire                                  valid_in,
                    output wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] degree_out,
                    output wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] x_out,
                    output wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] y_out,
                    output wire [SECTOR_FLAG_WIDTH - 1 : 0]     sector_out,
-                   output wire                                 arctan_en_out
+                   output wire                                 arctan_en_out,
+                   output wire                                 valid_out
                    );
    /*
     TAN(*)  | DEG         | DEG (BIN)
@@ -34,6 +36,9 @@ module pipeline#(
     0.125   | 7.123016349 | 111.001000000000000100010010010010011111111110100000101101101010101101100
     0.0625  | 3.576334375 | 11.1001001110001010101001100100110000101100100110011101110011101111000111
     0.03125 | 1.789910608 | 1.11001010001101111001010011100101001011100010101001111001001110011100110
+    */
+   /*
+    TODO: Enlarge pipeline depth to 14
     */
 
    wire [ITERATION_WORD_WIDTH - 1 : 0]                         degree_mem [ITERATION_NUMBER - 1 : 0];
@@ -53,11 +58,12 @@ module pipeline#(
 
    reg [ITERATION_WORD_WIDTH - 1 : 0]                          degree_reg [ITERATION_NUMBER : 0];
    reg [ITERATION_WORD_WIDTH - 1 : 0]                          degree_approx_reg [ITERATION_NUMBER : 0];
-   reg signed [ITERATION_WORD_WIDTH - 1 : 0]                          x_reg [ITERATION_NUMBER : 0];
-   reg signed [ITERATION_WORD_WIDTH - 1 : 0]                          y_reg [ITERATION_NUMBER : 0];
+   reg signed [ITERATION_WORD_WIDTH - 1 : 0]                   x_reg [ITERATION_NUMBER : 0];
+   reg signed [ITERATION_WORD_WIDTH - 1 : 0]                   y_reg [ITERATION_NUMBER : 0];
 
    reg                                                         arctan_en_reg [ITERATION_NUMBER : 0];
    reg [SECTOR_FLAG_WIDTH - 1 : 0]                             sector_reg [ITERATION_NUMBER : 0];
+   reg                                                         valid_reg [ITERATION_NUMBER : 0];
 
    always @ *
      begin
@@ -67,6 +73,7 @@ module pipeline#(
         degree_approx_reg[0] = 0;
         arctan_en_reg[0] = arctan_en_in;
         sector_reg[0] = sector_in;
+        valid_reg[0] = valid_in;
         if (arctan_en_in) begin
            x_reg[0][ITERATION_WORD_FRAC_WIDTH + UNSIGNED_INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - UNSIGNED_INPUT_FRAC_WIDTH] = x_in;
            x_reg[0][ITERATION_WORD_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH + UNSIGNED_INPUT_INT_WIDTH] = 0;
@@ -94,6 +101,7 @@ module pipeline#(
                  y_reg[i] <= 0;
                  arctan_en_reg[i] <= 0;
                  sector_reg[i] <= 0;
+                 valid_reg[i] <= 0;
               end
               else
                 if (arctan_en_reg[i - 1]) begin
@@ -124,6 +132,7 @@ module pipeline#(
                 end
               degree_reg[i] <= degree_reg[i - 1];
               sector_reg[i] <= sector_reg[i - 1];
+              valid_reg[i] <= valid_reg[i - 1];
            end
         end
    endgenerate
@@ -135,6 +144,7 @@ module pipeline#(
    wire [ITERATION_WORD_WIDTH * 2 - 1 : 0] x_enlarge_reg;
    wire [ITERATION_WORD_WIDTH * 2 - 1 : 0] y_enlarge_reg;
    // k_reg = 64'b00000000000000000000000000000000 000000000000 10011011011110110110;
+   // for N = 14, k = 0.10011011011101001110110110101110101111011001001011110
    assign k_reg = 64'b0000000000000000000000000000000000000000000010011011011110110110;
    assign x_enlarge_reg[ITERATION_WORD_WIDTH * 2 - 1 : ITERATION_WORD_WIDTH] = 0;
    assign x_enlarge_reg[ITERATION_WORD_WIDTH - 1 : 0] = x_reg[ITERATION_NUMBER];

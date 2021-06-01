@@ -1,5 +1,7 @@
 *.vvp
 *.vcd
+*.txt
 #*
+gen*
 HDL/build
 HDL/core/build

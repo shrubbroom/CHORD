@@ -14,7 +14,6 @@ module tb#(
            parameter ITERATION_WORD_INT_WIDTH = 12,
            parameter ITERATION_WORD_FRAC_WIDTH = 20,
            parameter SECTOR_FLAG_WIDTH = 2
-
            )();
    reg               clk;
    reg               reset;
