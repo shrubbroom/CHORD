@@ -20,7 +20,7 @@ module tb#(
    initial begin
       clk = 0;
       reset = 0;
-      $dumpfile("tb.vcd");
+      $dumpfile("./build/tb.vcd");
       $dumpvars(0, tb.clk);
       $dumpvars(0, tb.reset);
       $dumpvars(0, tb.x_out);
