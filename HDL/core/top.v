@@ -1,5 +1,6 @@
 `include "pipeline.v"
 `include "interface_input.v"
+`include "interface_output.v"
 module top#(
             parameter INPUT_WIDTH = 16,
             parameter OUTPUT_WIDTH = 16,
