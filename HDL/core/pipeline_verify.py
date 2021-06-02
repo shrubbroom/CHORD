@@ -191,10 +191,18 @@ with open("gen_tb_verify.v", "w") as vsrc_tb_verify_f:
     vsrc_tb_verify_f.write(vsrc_tb_verify)
 
 # Test for COS and SIN
-vraw_degree_in_f = open("mem.txt", "w")
-for i in range(89):
-    vraw_degree_in_f.write((bin(i)[2:]).zfill(8) + '00000000\n')
-vraw_degree_in_f.close()
+with open("degree_in_reg.txt", "w") as vraw_degree_in_f:
+    for i in range(89):
+        vraw_degree_in_f.write((bin(i)[2:]).zfill(8) + '00000000\n')
 
-sp.run(["iverilog", "-o", "gen_tb_verify.vcd", "gen_tb_verify.v"])
-sp.run(["vvp", "gen_tb_verify.vcd"])
+with open("x_in_reg.txt", "w") as vraw_x_in_f:
+    for i in range(89):
+        vraw_x_in_f.write('0000000100000000' +  '\n')
+
+with open("y_in_reg.txt", "w") as vraw_y_in_f:
+    for i in range(89):
+        vraw_y_in_f.write('00000000' + (bin(int(i/90 * 2^8))[2:]).zfill(8) + '\n')
+
+
+# sp.run(["iverilog", "-o", "gen_tb_verify.vcd", "gen_tb_verify.v"])
+# sp.run(["vvp", "gen_tb_verify.vcd"])
