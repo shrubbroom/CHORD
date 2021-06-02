@@ -1,10 +1,10 @@
 module pipeline#(
-                 parameter UNSIGNED_INPUT_WIDTH = 16,
-                 parameter UNSIGNED_OUTPUT_WIDTH = 16,
-                 parameter UNSIGNED_INPUT_INT_WIDTH = 7,
-                 parameter UNSIGNED_INPUT_FRAC_WIDTH = 8,
-                 parameter UNSIGNED_OUTPUT_INT_WIDTH = 7,
-                 parameter UNSIGNED_OUTPUT_FRAC_WIDTH = 8,
+                 parameter INPUT_WIDTH = 16,
+                 parameter OUTPUT_WIDTH = 16,
+                 parameter INPUT_INT_WIDTH = 7,
+                 parameter INPUT_FRAC_WIDTH = 8,
+                 parameter OUTPUT_INT_WIDTH = 7,
+                 parameter OUTPUT_FRAC_WIDTH = 8,
                  parameter ITERATION_NUMBER = 6,
                  parameter ITERATION_WORD_WIDTH = 32,
                  parameter ITERATION_WORD_INT_WIDTH = 12,
@@ -13,17 +13,17 @@ module pipeline#(
                  )(
                    input wire                                  clk,
                    input wire                                  reset,
-                   input wire signed [UNSIGNED_INPUT_WIDTH - 1 : 0]   degree_in,
+                   input wire signed [INPUT_WIDTH - 1 : 0]   degree_in,
 
-                   input wire signed [UNSIGNED_INPUT_WIDTH - 1 : 0]   x_in,
-                   input wire signed [UNSIGNED_INPUT_WIDTH - 1 : 0]   y_in,
+                   input wire signed [INPUT_WIDTH - 1 : 0]   x_in,
+                   input wire signed [INPUT_WIDTH - 1 : 0]   y_in,
 
                    input wire [SECTOR_FLAG_WIDTH - 1 : 0]      sector_in,
                    input wire                                  arctan_en_in,
                    input wire                                  valid_in,
-                   output wire signed [UNSIGNED_OUTPUT_WIDTH - 1 : 0] degree_out,
-                   output wire signed [UNSIGNED_OUTPUT_WIDTH - 1 : 0] x_out,
-                   output wire signed [UNSIGNED_OUTPUT_WIDTH - 1 : 0] y_out,
+                   output wire signed [OUTPUT_WIDTH - 1 : 0] degree_out,
+                   output wire signed [OUTPUT_WIDTH - 1 : 0] x_out,
+                   output wire signed [OUTPUT_WIDTH - 1 : 0] y_out,
                    output wire [SECTOR_FLAG_WIDTH - 1 : 0]     sector_out,
                    output wire                                 arctan_en_out,
                    output wire                                 valid_out
@@ -67,20 +67,20 @@ module pipeline#(
 
    always @ *
      begin
-        degree_reg[0][ITERATION_WORD_FRAC_WIDTH + UNSIGNED_INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - UNSIGNED_INPUT_FRAC_WIDTH] = degree_in;
-        degree_reg[0][ITERATION_WORD_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH + UNSIGNED_INPUT_INT_WIDTH] = 0;
-        degree_reg[0][ITERATION_WORD_FRAC_WIDTH - UNSIGNED_INPUT_FRAC_WIDTH - 1 : 0] = 0;
+        degree_reg[0][ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH] = degree_in;
+        degree_reg[0][ITERATION_WORD_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH] = 0;
+        degree_reg[0][ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH - 1 : 0] = 0;
         degree_approx_reg[0] = 0;
         arctan_en_reg[0] = arctan_en_in;
         sector_reg[0] = sector_in;
         valid_reg[0] = valid_in;
         if (arctan_en_in) begin
-           x_reg[0][ITERATION_WORD_FRAC_WIDTH + UNSIGNED_INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - UNSIGNED_INPUT_FRAC_WIDTH] = x_in;
-           x_reg[0][ITERATION_WORD_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH + UNSIGNED_INPUT_INT_WIDTH] = 0;
-           x_reg[0][ITERATION_WORD_FRAC_WIDTH - UNSIGNED_INPUT_FRAC_WIDTH - 1 : 0] = 0;
-           y_reg[0][ITERATION_WORD_FRAC_WIDTH + UNSIGNED_INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - UNSIGNED_INPUT_FRAC_WIDTH] = y_in;
-           y_reg[0][ITERATION_WORD_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH + UNSIGNED_INPUT_INT_WIDTH] = 0;
-           y_reg[0][ITERATION_WORD_FRAC_WIDTH - UNSIGNED_INPUT_FRAC_WIDTH - 1 : 0] = 0;
+           x_reg[0][ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH] = x_in;
+           x_reg[0][ITERATION_WORD_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH] = 0;
+           x_reg[0][ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH - 1 : 0] = 0;
+           y_reg[0][ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH] = y_in;
+           y_reg[0][ITERATION_WORD_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH] = 0;
+           y_reg[0][ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH - 1 : 0] = 0;
         end
         else begin
            // x_reg[0] = 32'b000000000001 00000000000000000000;
@@ -164,17 +164,17 @@ module pipeline#(
       y_correct_reg = (y_enlarge_reg * k_reg) >>> 22;
    end
 
-   assign degree_out[UNSIGNED_OUTPUT_WIDTH - 1 : 0]
+   assign degree_out[OUTPUT_WIDTH - 1 : 0]
      = degree_approx_reg[ITERATION_NUMBER]
-       [ITERATION_WORD_FRAC_WIDTH + UNSIGNED_INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - UNSIGNED_INPUT_FRAC_WIDTH];
-   assign x_out[UNSIGNED_OUTPUT_WIDTH - 1] = x_correct_reg[ITERATION_WORD_WIDTH * 2 - 1];
-   assign x_out[UNSIGNED_OUTPUT_WIDTH - 2 : 0]
+       [ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH];
+   assign x_out[OUTPUT_WIDTH - 1] = x_correct_reg[ITERATION_WORD_WIDTH * 2 - 1];
+   assign x_out[OUTPUT_WIDTH - 2 : 0]
      = x_correct_reg
-       [ITERATION_WORD_FRAC_WIDTH + UNSIGNED_INPUT_INT_WIDTH - 2 : ITERATION_WORD_FRAC_WIDTH - UNSIGNED_INPUT_FRAC_WIDTH];
-   assign y_out[UNSIGNED_OUTPUT_WIDTH - 1] = y_correct_reg[ITERATION_WORD_WIDTH * 2 - 1];
-   assign y_out[UNSIGNED_OUTPUT_WIDTH - 2 : 0]
+       [ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 2 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH];
+   assign y_out[OUTPUT_WIDTH - 1] = y_correct_reg[ITERATION_WORD_WIDTH * 2 - 1];
+   assign y_out[OUTPUT_WIDTH - 2 : 0]
      = y_correct_reg
-       [ITERATION_WORD_FRAC_WIDTH + UNSIGNED_INPUT_INT_WIDTH - 2 : ITERATION_WORD_FRAC_WIDTH - UNSIGNED_INPUT_FRAC_WIDTH];
+       [ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 2 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH];
    assign arctan_en_out
      = arctan_en_reg[ITERATION_NUMBER];
    assign sector_out

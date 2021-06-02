@@ -3,12 +3,12 @@
 `define SIM_TIME 118600
 
 module tb#(
-           parameter UNSIGNED_INPUT_WIDTH = 16,
-           parameter UNSIGNED_OUTPUT_WIDTH = 16,
-           parameter UNSIGNED_INPUT_INT_WIDTH = 7,
-           parameter UNSIGNED_INPUT_FRAC_WIDTH = 8,
-           parameter UNSIGNED_OUTPUT_INT_WIDTH = 7,
-           parameter UNSIGNED_OUTPUT_FRAC_WIDTH = 8,
+           parameter INPUT_WIDTH = 16,
+           parameter OUTPUT_WIDTH = 16,
+           parameter INPUT_INT_WIDTH = 7,
+           parameter INPUT_FRAC_WIDTH = 8,
+           parameter OUTPUT_INT_WIDTH = 7,
+           parameter OUTPUT_FRAC_WIDTH = 8,
            parameter ITERATION_NUMBER = 6,
            parameter ITERATION_WORD_WIDTH = 32,
            parameter ITERATION_WORD_INT_WIDTH = 12,
@@ -47,17 +47,17 @@ module tb#(
       # `SIM_TIME $finish;
    end
    always #10 clk = !clk;
-   reg [UNSIGNED_INPUT_WIDTH - 1 : 0] degree_in_reg;
-   wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] degree_out;
-   wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] x_out;
-   wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] y_out;
-   wire [UNSIGNED_INPUT_WIDTH - 1 : 0]  degree_in;
+   reg [INPUT_WIDTH - 1 : 0] degree_in_reg;
+   wire [OUTPUT_WIDTH - 1 : 0] degree_out;
+   wire [OUTPUT_WIDTH - 1 : 0] x_out;
+   wire [OUTPUT_WIDTH - 1 : 0] y_out;
+   wire [INPUT_WIDTH - 1 : 0]  degree_in;
    wire [SECTOR_FLAG_WIDTH - 1 : 0]     sector_in;
    wire [SECTOR_FLAG_WIDTH - 1 : 0]     sector_out;
    wire                                 arctan_en_in;
    wire                                 arctan_en_out;
-   wire [UNSIGNED_INPUT_WIDTH - 1 : 0]  x_in;
-   wire [UNSIGNED_INPUT_WIDTH - 1 : 0]  y_in;
+   wire [INPUT_WIDTH - 1 : 0]  x_in;
+   wire [INPUT_WIDTH - 1 : 0]  y_in;
    assign degree_in = degree_in_reg;
    assign arctan_en_in = 0;
    assign x_in = 16'b0000000100000000;

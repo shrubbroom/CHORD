@@ -1,12 +1,12 @@
 `include "pipeline.v"
 `include "interface_input.v"
 module top#(
-            parameter UNSIGNED_INPUT_WIDTH = 16,
-            parameter UNSIGNED_OUTPUT_WIDTH = 16,
-            parameter UNSIGNED_INPUT_INT_WIDTH = 7,
-            parameter UNSIGNED_INPUT_FRAC_WIDTH = 8,
-            parameter UNSIGNED_OUTPUT_INT_WIDTH = 7,
-            parameter UNSIGNED_OUTPUT_FRAC_WIDTH = 8,
+            parameter INPUT_WIDTH = 16,
+            parameter OUTPUT_WIDTH = 16,
+            parameter INPUT_INT_WIDTH = 7,
+            parameter INPUT_FRAC_WIDTH = 8,
+            parameter OUTPUT_INT_WIDTH = 7,
+            parameter OUTPUT_FRAC_WIDTH = 8,
             parameter ITERATION_NUMBER = 6,
             parameter ITERATION_WORD_WIDTH = 32,
             parameter ITERATION_WORD_INT_WIDTH = 12,

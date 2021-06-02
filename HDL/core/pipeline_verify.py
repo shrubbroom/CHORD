@@ -85,12 +85,12 @@ vsrc_tb_verify = \
 `define SIM_TIME 118600
 
 module gen_tb_verify#(
-                  parameter UNSIGNED_INPUT_WIDTH = 16,
-                  parameter UNSIGNED_OUTPUT_WIDTH = 16,
-                  parameter UNSIGNED_INPUT_INT_WIDTH = 7,
-                  parameter UNSIGNED_INPUT_FRAC_WIDTH = 8,
-                  parameter UNSIGNED_OUTPUT_INT_WIDTH = 7,
-                  parameter UNSIGNED_OUTPUT_FRAC_WIDTH = 8,
+                  parameter INPUT_WIDTH = 16,
+                  parameter OUTPUT_WIDTH = 16,
+                  parameter INPUT_INT_WIDTH = 7,
+                  parameter INPUT_FRAC_WIDTH = 8,
+                  parameter OUTPUT_INT_WIDTH = 7,
+                  parameter OUTPUT_FRAC_WIDTH = 8,
                   parameter ITERATION_NUMBER = 6,
                   parameter ITERATION_WORD_WIDTH = 32,
                   parameter ITERATION_WORD_INT_WIDTH = 12,
@@ -130,16 +130,16 @@ module gen_tb_verify#(
    end
 
    always #10 clk = !clk;
-   wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] degree_out;
-   wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] x_out;
-   wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] y_out;
-   wire [UNSIGNED_INPUT_WIDTH - 1 : 0]  degree_in;
+   wire [OUTPUT_WIDTH - 1 : 0] degree_out;
+   wire [OUTPUT_WIDTH - 1 : 0] x_out;
+   wire [OUTPUT_WIDTH - 1 : 0] y_out;
+   wire [INPUT_WIDTH - 1 : 0]  degree_in;
    wire [SECTOR_FLAG_WIDTH - 1 : 0]     sector_in;
    wire [SECTOR_FLAG_WIDTH - 1 : 0]     sector_out;
    wire                                 arctan_en_in;
    wire                                 arctan_en_out;
-   wire [UNSIGNED_INPUT_WIDTH - 1 : 0]  x_in;
-   wire [UNSIGNED_INPUT_WIDTH - 1 : 0]  y_in;
+   wire [INPUT_WIDTH - 1 : 0]  x_in;
+   wire [INPUT_WIDTH - 1 : 0]  y_in;
    wire                                 valid_in;
    wire                                 valid_out;
    reg [MEM_ADDR_WIDTH - 1 : 0]         mem_read_addr;
@@ -158,18 +158,18 @@ module gen_tb_verify#(
    assign valid_in = 1;
    pipeline pipeline(/*AUTOINST*/
                      // Outputs
-                     .degree_out        (degree_out[UNSIGNED_OUTPUT_WIDTH-1:0]),
-                     .x_out             (x_out[UNSIGNED_OUTPUT_WIDTH-1:0]),
-                     .y_out             (y_out[UNSIGNED_OUTPUT_WIDTH-1:0]),
+                     .degree_out        (degree_out[OUTPUT_WIDTH-1:0]),
+                     .x_out             (x_out[OUTPUT_WIDTH-1:0]),
+                     .y_out             (y_out[OUTPUT_WIDTH-1:0]),
                      .sector_out        (sector_out[SECTOR_FLAG_WIDTH-1:0]),
                      .arctan_en_out     (arctan_en_out),
                      .valid_out         (valid_out),
                      // Inputs
                      .clk               (clk),
                      .reset             (reset),
-                     .degree_in         (degree_in[UNSIGNED_INPUT_WIDTH-1:0]),
-                     .x_in              (x_in[UNSIGNED_INPUT_WIDTH-1:0]),
-                     .y_in              (y_in[UNSIGNED_INPUT_WIDTH-1:0]),
+                     .degree_in         (degree_in[INPUT_WIDTH-1:0]),
+                     .x_in              (x_in[INPUT_WIDTH-1:0]),
+                     .y_in              (y_in[INPUT_WIDTH-1:0]),
                      .sector_in         (sector_in[SECTOR_FLAG_WIDTH-1:0]),
                      .arctan_en_in      (arctan_en_in),
                      .valid_in          (valid_in));
