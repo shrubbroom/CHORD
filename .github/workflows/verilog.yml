@@ -1,0 +1,26 @@
+name: verilog
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+    env:
+      core: ./HDL/core
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Yosys and iverilog
+      run: sudo apt-get install yosys iverilog emacs -y
+    - name: Expand auto
+      run: emacs -batch -Q --eval="(with-current-buffer (find-file \"top.v\") (verilog-auto) (save-buffer))"
+      working-directory: ${{env.core}}
+    - name: iverilog test
+      run: iverilog -o top.vcd top.v
+      working-directory: ${{env.core}}
+    - name: yosys test
+      run: yosys -p "hierarchy -check; proc;" top.v
+      working-directory: ${{env.core}}
