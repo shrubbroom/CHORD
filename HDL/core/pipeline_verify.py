@@ -95,7 +95,7 @@ module gen_tb_verify#(
                   parameter ITERATION_WORD_WIDTH = 32,
                   parameter ITERATION_WORD_INT_WIDTH = 12,
                   parameter ITERATION_WORD_FRAC_WIDTH = 20,
-                  parameter SECTOR_FLAG_WIDTH = 2,
+                  parameter FLIP_FLAG_WIDTH = 2,
                   parameter MEM_WORD_WIDTH = 16,
                   parameter MEM_LENGTH = {mem_length},
                   parameter MEM_ADDR_WIDTH = {mem_addr_width}
@@ -134,8 +134,8 @@ module gen_tb_verify#(
    wire [OUTPUT_WIDTH - 1 : 0] x_out;
    wire [OUTPUT_WIDTH - 1 : 0] y_out;
    wire [INPUT_WIDTH - 1 : 0]  degree_in;
-   wire [SECTOR_FLAG_WIDTH - 1 : 0]     sector_in;
-   wire [SECTOR_FLAG_WIDTH - 1 : 0]     sector_out;
+   wire [FLIP_FLAG_WIDTH - 1 : 0]     sector_in;
+   wire [FLIP_FLAG_WIDTH - 1 : 0]     sector_out;
    wire                                 arctan_en_in;
    wire                                 arctan_en_out;
    wire [INPUT_WIDTH - 1 : 0]  x_in;
@@ -161,7 +161,7 @@ module gen_tb_verify#(
                      .degree_out        (degree_out[OUTPUT_WIDTH-1:0]),
                      .x_out             (x_out[OUTPUT_WIDTH-1:0]),
                      .y_out             (y_out[OUTPUT_WIDTH-1:0]),
-                     .sector_out        (sector_out[SECTOR_FLAG_WIDTH-1:0]),
+                     .sector_out        (sector_out[FLIP_FLAG_WIDTH-1:0]),
                      .arctan_en_out     (arctan_en_out),
                      .valid_out         (valid_out),
                      // Inputs
@@ -170,7 +170,7 @@ module gen_tb_verify#(
                      .degree_in         (degree_in[INPUT_WIDTH-1:0]),
                      .x_in              (x_in[INPUT_WIDTH-1:0]),
                      .y_in              (y_in[INPUT_WIDTH-1:0]),
-                     .sector_in         (sector_in[SECTOR_FLAG_WIDTH-1:0]),
+                     .sector_in         (sector_in[FLIP_FLAG_WIDTH-1:0]),
                      .arctan_en_in      (arctan_en_in),
                      .valid_in          (valid_in));
    gen_mem gen_mem(/*AUTOINST*/

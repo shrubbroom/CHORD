@@ -11,7 +11,7 @@ module top#(
             parameter ITERATION_WORD_WIDTH = 32,
             parameter ITERATION_WORD_INT_WIDTH = 12,
             parameter ITERATION_WORD_FRAC_WIDTH = 20,
-            parameter SECTOR_FLAG_WIDTH = 2
+            parameter FLIP_FLAG_WIDTH = 2
             )(
               /*AUTOINPUT*/
               );
@@ -19,4 +19,5 @@ module top#(
    /*AUTOWIRE*/
    pipeline pipeline(/*AUTOINST*/);
    interface_input interface_input(/*AUTOINST*/);
+   interface_output interface_output(/*AUTOINST*/);
 endmodule // top
