@@ -1,10 +1,15 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
-# import numpy as np
+import numpy as np
 import subprocess as sp
 
-mem_addr_width = 9
+def print_line(fn):
+    with open(fn, "r") as f:
+        for line in f:
+            # print(int(line, 2) * 2 ** (-8))
+            print(line)
 
+mem_addr_width = 9
 vsrc_mem = \
 """module gen_mem#(
             parameter MEM_WORD_WIDTH = 16,
@@ -36,7 +41,7 @@ vsrc_mem = \
         arctan_en_in = arctan_en_in_reg[mem_read_addr];
      end
 endmodule
-""".format(mem_addr_width = mem_addr_width, mem_length = 2^mem_addr_width)
+""".format(mem_addr_width = mem_addr_width, mem_length = 2 ** mem_addr_width)
 
 with open("gen_mem.v", "w") as vsrc_mem_f:
     vsrc_mem_f.write(vsrc_mem)
@@ -66,7 +71,7 @@ vsrc_mem_result = \
         y_out_reg[mem_write_addr] <= y_out;
      end
 endmodule
-""".format(mem_addr_width = mem_addr_width, mem_length = 2 ^ mem_addr_width)
+""".format(mem_addr_width = mem_addr_width, mem_length = 2 ** mem_addr_width)
 
 with open("gen_mem_result.v", "w") as vsrc_mem_result_f:
     vsrc_mem_result_f.write(vsrc_mem_result)
@@ -101,7 +106,8 @@ module gen_tb_verify#(
    integer           i;
    initial begin
       clk = 0;
-      reset = 0;
+      reset = 1;
+      #1 reset = 0;
       #5 reset = 1;
       # `SIM_TIME begin
          fp = $fopen("./degree_out_reg.txt","w");
@@ -185,24 +191,40 @@ module gen_tb_verify#(
                          .clk                   (clk),
                          .reset                 (reset));
 endmodule // tb_verify
-""".format(mem_addr_width = mem_addr_width, mem_length = 2 ^ mem_addr_width)
+""".format(mem_addr_width = mem_addr_width, mem_length = 2 ** mem_addr_width)
 
 with open("gen_tb_verify.v", "w") as vsrc_tb_verify_f:
     vsrc_tb_verify_f.write(vsrc_tb_verify)
 
-# Test for COS and SIN
 with open("degree_in_reg.txt", "w") as vraw_degree_in_f:
-    for i in range(89):
-        vraw_degree_in_f.write((bin(i)[2:]).zfill(8) + '00000000\n')
+    for i in range(512):
+        vraw_degree_in_f.write((bin(int(i * 90 / 512 * 2 ** 8))[2:]).zfill(16) + '\n')
 
 with open("x_in_reg.txt", "w") as vraw_x_in_f:
-    for i in range(89):
+    for i in range(512):
         vraw_x_in_f.write('0000000100000000' +  '\n')
 
 with open("y_in_reg.txt", "w") as vraw_y_in_f:
-    for i in range(89):
-        vraw_y_in_f.write('00000000' + (bin(int(i/90 * 2^8))[2:]).zfill(8) + '\n')
+    for i in range(512):
+        vraw_y_in_f.write((bin(int(i/512 * 2 ** 8))[2:]).zfill(16) + '\n')
+
+with open("arctan_en_in_reg.txt", "w") as vraw_arctan_in_f:
+    for i in range(512):
+        vraw_arctan_in_f.write("0\n")
+        # vraw_arctan_in_f.write(str(i%2) + '\n')
 
 
-# sp.run(["iverilog", "-o", "gen_tb_verify.vcd", "gen_tb_verify.v"])
-# sp.run(["vvp", "gen_tb_verify.vcd"])
+sp.run(["iverilog", "-o", "gen_tb_verify.vcd", "gen_tb_verify.v"])
+sp.run(["vvp", "gen_tb_verify.vcd"])
+
+print_line("degree_in_reg.txt")
+print('-' * 80)
+print_line("x_out_reg.txt")
+# with open("x_in_reg.txt", "r") as vraw_x_out_f:
+#     for line in vraw_x_out_f:
+#         print(int(line, 2) * 2 ** (-8))
+# print('-' * 80)
+# with open("y_in_reg.txt", "r") as vraw_y_out_f:
+#     for line in vraw_y_out_f:
+#         print(int(line, 2) * 2 ** (-8))
+# print('-' * 80)

@@ -18,10 +18,10 @@ module tb#(
    reg               clk;
    reg               reset;
    initial begin
-      degree_in_reg = 0;
+      degree_in_reg = 16'b0000000100000000;
       clk = 0;
       reset = 0;
-      $dumpfile("./build/tb.vcd");
+      $dumpfile("./tb.vcd");
       $dumpvars(0, tb.clk);
       $dumpvars(0, tb.reset);
       $dumpvars(0, tb.x_out);
@@ -48,10 +48,6 @@ module tb#(
    end
    always #10 clk = !clk;
    reg [UNSIGNED_INPUT_WIDTH - 1 : 0] degree_in_reg;
-   always @ (posedge clk)
-     begin
-        degree_in_reg <= degree_in_reg + 16'b0000000000010000;
-     end
    wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] degree_out;
    wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] x_out;
    wire [UNSIGNED_OUTPUT_WIDTH - 1 : 0] y_out;
@@ -63,7 +59,7 @@ module tb#(
    wire [UNSIGNED_INPUT_WIDTH - 1 : 0]  x_in;
    wire [UNSIGNED_INPUT_WIDTH - 1 : 0]  y_in;
    assign degree_in = degree_in_reg;
-   assign arctan_en_in = 1;
+   assign arctan_en_in = 0;
    assign x_in = 16'b0000000100000000;
    assign y_in = 16'b0000000110111011;
    pipeline pipeline(/*AUTOINST*/
