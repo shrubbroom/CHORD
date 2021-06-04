@@ -1,0 +1,3 @@
+[submodule "HDL/wujian100"]
+	path = HDL/wujian100
+	url = https://github.com/Miracle3310/wujian100_open.git
