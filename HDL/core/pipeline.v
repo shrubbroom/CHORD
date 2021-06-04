@@ -64,7 +64,7 @@ module pipeline#(
    reg [FLIP_FLAG_WIDTH - 1 : 0]                             flip_reg [ITERATION_NUMBER : 0];
    reg                                                       valid_reg [ITERATION_NUMBER : 0];
 
-   integer i_1, i_2;
+   integer i_1, i_2, i_3;
    always @ *
      begin
 
@@ -79,12 +79,12 @@ module pipeline#(
         valid_reg[0] = valid_in;
         if (arctan_en_in) begin
            x_reg[0][ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH] = x_in;
-           for (i_2nteger i_2 = ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH ; i_2 < ITERATION_WORD_WIDTH; i_2 = i_2 + 1)
+           for (i_2 = ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH ; i_2 < ITERATION_WORD_WIDTH; i_2 = i_2 + 1)
              x_reg[0][i_2] = x_in[INPUT_WIDTH - 1];
            x_reg[0][ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH - 1 : 0] = 0;
            y_reg[0][ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH] = y_in;
-           for (integer i = ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH ; i < ITERATION_WORD_WIDTH; i = i + 1)
-             y_reg[0][i] = y_in[INPUT_WIDTH - 1];
+           for (i_3 = ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH ; i_3 < ITERATION_WORD_WIDTH; i_3 = i_3 + 1)
+             y_reg[0][i_3] = y_in[INPUT_WIDTH - 1];
            y_reg[0][ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH - 1 : 0] = 0;
         end
         else begin
