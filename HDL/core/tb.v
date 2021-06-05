@@ -52,8 +52,8 @@ module tb#(
    wire [OUTPUT_WIDTH - 1 : 0] x_out;
    wire [OUTPUT_WIDTH - 1 : 0] y_out;
    wire [INPUT_WIDTH - 1 : 0]  degree_in;
-   wire [FLIP_FLAG_WIDTH - 1 : 0]     sector_in;
-   wire [FLIP_FLAG_WIDTH - 1 : 0]     sector_out;
+   wire [FLIP_FLAG_WIDTH - 1 : 0]     flip_in;
+   wire [FLIP_FLAG_WIDTH - 1 : 0]     flip_out;
    wire                                 arctan_en_in;
    wire                                 arctan_en_out;
    wire [INPUT_WIDTH - 1 : 0]  x_in;
@@ -64,17 +64,19 @@ module tb#(
    assign y_in = 16'b0000000110111011;
    pipeline pipeline(/*AUTOINST*/
                      // Outputs
-                     .degree_out        (degree_out),
-                     .x_out             (x_out),
-                     .y_out             (y_out),
-                     .sector_out        (sector_out),
+                     .degree_out        (degree_out[OUTPUT_WIDTH-1:0]),
+                     .x_out             (x_out[OUTPUT_WIDTH-1:0]),
+                     .y_out             (y_out[OUTPUT_WIDTH-1:0]),
+                     .flip_out          (flip_out[FLIP_FLAG_WIDTH-1:0]),
                      .arctan_en_out     (arctan_en_out),
+                     .valid_out         (valid_out),
                      // Inputs
                      .clk               (clk),
                      .reset             (reset),
-                     .degree_in         (degree_in),
-                     .x_in              (x_in),
-                     .y_in              (y_in),
-                     .sector_in         (sector_in),
-                     .arctan_en_in      (arctan_en_in));
+                     .degree_in         (degree_in[INPUT_WIDTH-1:0]),
+                     .x_in              (x_in[INPUT_WIDTH-1:0]),
+                     .y_in              (y_in[INPUT_WIDTH-1:0]),
+                     .flip_in           (flip_in[FLIP_FLAG_WIDTH-1:0]),
+                     .arctan_en_in      (arctan_en_in),
+                     .valid_in          (valid_in));
 endmodule // tb

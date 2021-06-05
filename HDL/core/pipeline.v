@@ -66,7 +66,6 @@ module pipeline#(
 
    always @ *
      begin
-
         degree_reg[0][ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH] = degree_in;
         for (integer i = ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH ; i < ITERATION_WORD_WIDTH; i = i + 1)
           degree_reg[0][i] = degree_in[INPUT_WIDTH - 1];
