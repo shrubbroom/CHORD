@@ -15,6 +15,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set up Yosys and iverilog
       run: sudo apt-get install yosys iverilog emacs -y
+    - name: Set up Python
+      run: |
+        python3 -m pip install --upgrade pip
+        pip install numpy
     - name: Expand auto
       run: emacs -batch -Q --eval="(with-current-buffer (find-file \"top.v\") (verilog-auto) (save-buffer))"
       working-directory: ${{env.core}}

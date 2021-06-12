@@ -3,7 +3,7 @@
 import numpy as np
 import subprocess as sp
 import random
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 
 def print_line(fn):
     with open(fn, "r") as f:
