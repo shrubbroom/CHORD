@@ -9,7 +9,7 @@ module pipeline#(
                  parameter ITERATION_WORD_WIDTH = 32,
                  parameter ITERATION_WORD_INT_WIDTH = 12,
                  parameter ITERATION_WORD_FRAC_WIDTH = 20,
-                 parameter FLIP_FLAG_WIDTH = 2
+                 parameter FLIP_FLAG_WIDTH = 1
                  )(
                    input wire                                clk,
                    input wire                                reset,
@@ -64,7 +64,7 @@ module pipeline#(
    reg [FLIP_FLAG_WIDTH - 1 : 0]                             flip_reg [ITERATION_NUMBER : 0];
    reg                                                       valid_reg [ITERATION_NUMBER : 0];
 
-   integer i_1, i_2, i_3;
+   integer                                                   i_1, i_2, i_3;
    always @ *
      begin
         degree_reg[0][ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH] = degree_in;
@@ -156,32 +156,32 @@ module pipeline#(
          assign y_enlarge_reg[j] = y_reg[ITERATION_NUMBER][ITERATION_WORD_WIDTH - 1];
       end
    endgenerate
-   assign x_enlarge_reg[ITERATION_WORD_WIDTH - 1 : 0] = x_reg[ITERATION_NUMBER][ITERATION_WORD_WIDTH - 2 : 0];
-   assign y_enlarge_reg[ITERATION_WORD_WIDTH - 1 : 0] = y_reg[ITERATION_NUMBER][ITERATION_WORD_WIDTH - 2 : 0];
+   assign x_enlarge_reg[ITERATION_WORD_WIDTH - 1 : 0] = x_reg[ITERATION_NUMBER][ITERATION_WORD_WIDTH - 1 : 0];
+   assign y_enlarge_reg[ITERATION_WORD_WIDTH - 1 : 0] = y_reg[ITERATION_NUMBER][ITERATION_WORD_WIDTH - 1 : 0];
 
 
    reg signed [ITERATION_WORD_WIDTH * 2 - 1 : 0]  x_correct_reg;
    reg signed [ITERATION_WORD_WIDTH * 2 - 1 : 0]  y_correct_reg;
    always @ * begin
-      x_correct_reg = (x_enlarge_reg * k_reg) >>> 22;
-      y_correct_reg = (y_enlarge_reg * k_reg) >>> 22;
+      x_correct_reg = (x_enlarge_reg * k_reg) >>> ITERATION_WORD_FRAC_WIDTH;
+      y_correct_reg = (y_enlarge_reg * k_reg) >>> ITERATION_WORD_FRAC_WIDTH;
    end
 
    assign degree_out[OUTPUT_WIDTH - 1 : 0]
      = degree_approx_reg[ITERATION_NUMBER]
-       [ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH];
+       [ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH];
    assign x_out[OUTPUT_WIDTH - 1] = x_correct_reg[ITERATION_WORD_WIDTH * 2 - 1];
    assign x_out[OUTPUT_WIDTH - 2 : 0]
      = x_correct_reg
-       [ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 2 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH];
+       [ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH];
    assign y_out[OUTPUT_WIDTH - 1] = y_correct_reg[ITERATION_WORD_WIDTH * 2 - 1];
    assign y_out[OUTPUT_WIDTH - 2 : 0]
      = y_correct_reg
-       [ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 2 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH];
+       [ITERATION_WORD_FRAC_WIDTH + INPUT_INT_WIDTH - 1 : ITERATION_WORD_FRAC_WIDTH - INPUT_FRAC_WIDTH];
    assign arctan_en_out
      = arctan_en_reg[ITERATION_NUMBER];
    assign flip_out
-     =flip_reg[ITERATION_NUMBER];
+     = flip_reg[ITERATION_NUMBER];
    assign valid_out
-     =valid_reg[ITERATION_NUMBER];
+     = valid_reg[ITERATION_NUMBER];
 endmodule // pipeline
