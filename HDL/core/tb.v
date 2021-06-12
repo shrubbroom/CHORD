@@ -18,7 +18,7 @@ module tb#(
    reg               clk;
    reg               reset;
    initial begin
-      degree_in_reg = 16'b10000110000000000;
+      degree_in_reg = 16'b1010011000000000;
       clk = 0;
       reset = 0;
       $dumpfile("./tb.vcd");
@@ -59,7 +59,7 @@ module tb#(
    wire [INPUT_WIDTH - 1 : 0]  x_in;
    wire [INPUT_WIDTH - 1 : 0]  y_in;
    assign degree_in = degree_in_reg;
-   assign arctan_en_in = 1;
+   assign arctan_en_in = 0;
    assign x_in = 16'b0000000100000000;
    assign y_in = 16'b0000010000000010;
    pipeline pipeline(/*AUTOINST*/
