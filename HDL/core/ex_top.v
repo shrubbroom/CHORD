@@ -1,4 +1,7 @@
 /* DONOT modify this top module by hand */
+`include "interface_input.v"
+`include "interface_output.v"
+`include "pipeline.v"
 module ex_top#(
                parameter INPUT_WIDTH = 16,
                parameter OUTPUT_WIDTH = 16,
