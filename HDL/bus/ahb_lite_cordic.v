@@ -32,7 +32,10 @@ module ahb_lite_cordic
          output reg [31:0]     in_interface,
          output valid_in_interface,
          input valid_out_interface,
-         input [31:0]          out_interface,
+
+         //fifo side
+         output read_fifo_en,
+         input [31:0]          out_fifo,
          input empty
        );
 
@@ -58,6 +61,7 @@ assign  HRESP  = 1'b0;
 assign HREADYOUT=(State==S_IDLE || State==Next);
 
 assign valid_in_interface=HSEL;
+assign read_fifo_en=!HWRITE;
 
 wire                     NeedAction = (HTRANS != HTRANS_IDLE) && HSEL && HREADY;
 // wire    NeedRefresh         = ~|delay_u;
@@ -88,7 +92,7 @@ always @ (*) begin
     //data
     case(State)
       default       :   in_interface = 32'b0; // 32'b0
-      S_READ        :   HRDATA = out_interface;
+      S_READ        :   HRDATA = out_fifo;
       S_WRITE       :   in_interface = HWDATA;
     endcase
   end
