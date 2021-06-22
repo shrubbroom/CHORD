@@ -59,7 +59,7 @@ module ahb_lite_cordic (
    assign valid_in_interface=HSEL;
    assign read_fifo_en=!HWRITE;
 
-   wire                                       NeedAction = (HTRANS != HTRANS_IDLE) && HSEL && HREADY;
+   wire                                       NeedAction = (HTRANS != HTRANS_IDLE) && HSEL;
    // wire    NeedRefresh         = ~|delay_u;
    // wire    DelayFinished       = ~|delay_n;
    // wire    BigDelayFinished    = ~|delay_u;
