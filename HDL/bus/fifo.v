@@ -7,7 +7,7 @@ reg [4:0] 		     rp,wp; //read pointer, write pointer
 reg 			     empty_in;
 // reg                  half_full_in;
 
-wire full,overflow,half_full;
+// wire full,overflow,half_full;
 
 
 assign empty=empty_in;
