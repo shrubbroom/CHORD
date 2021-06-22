@@ -1,47 +1,48 @@
-module ahb_lite_cordic (
-                        //ABB-Lite side
-                        //Select
-                        input                 HSEL,
-                        //Global signals
-                        input                 HCLK,
-                        input                 HRESETn,
-                        //Address and control
-                        input [ 31 : 0 ]      HADDR,
-                        input [ 2 : 0 ]       HBURST, //ignored
-                        input                 HMASTLOCK, // ignored
-                        input [ 3 : 0 ]       HPROT, // ignored
-                        input [ 2 : 0 ]       HSIZE,//000=8bits,001=16bits,010=32bits
-                        input [ 1 : 0 ]       HTRANS,//Transfer type
-                        input                 HWRITE,//1=write 0=read
-                        input                 HREADY,
-                        //Master data
-                        input [ 31 : 0 ]      HWDATA,//Write data from master to slave
+module ahb_lite_cordic
+  (
+   //ABB-Lite side
+   //Select
+   input                 HSEL,
+   //Global signals
+   input                 HCLK,
+   input                 HRESETn,
+   //Address and control
+   input [ 31 : 0 ]      HADDR,
+   input [ 2 : 0 ]       HBURST, //ignored
+   input                 HMASTLOCK, // ignored
+   input [ 3 : 0 ]       HPROT, // ignored
+   input [ 2 : 0 ]       HSIZE,//000=8bits,001=16bits,010=32bits
+   input [ 1 : 0 ]       HTRANS,//Transfer type
+   input                 HWRITE,//1=write 0=read
+   input                 HREADY,
+   //Master data
+   input [ 31 : 0 ]      HWDATA,//Write data from master to slave
 
-                        //Transfer response
-                        output                HREADYOUT,//1=transfer finish
-                        output [1:0]          HRESP, //Transfer success or failure
-                        //Slave Data
-                        output reg [ 31 : 0 ] HRDATA,
+   //Transfer response
+   output                HREADYOUT,//1=transfer finish
+   output [1:0]          HRESP, //Transfer success or failure
+   //Slave Data
+   output reg [ 31 : 0 ] HRDATA,
 
 
-                        //CORDIC side
-                        output reg [31:0]     in_interface,
-                        output                valid_in_interface,
-                        input                 valid_out_interface,
+   //CORDIC side
+   output reg [31:0]     in_interface,
+   output                valid_in_interface,
+   input                 valid_out_interface,
 
-                        //fifo side
-                        output                read_fifo_en,
-                        input [31:0]          out_fifo,
-                        input                 empty
-                        );
+   //fifo side
+   output                read_fifo_en,
+   input [31:0]          out_fifo,
+   input                 empty
+   );
 
    //FSM states
-   parameter                                  S_IDLE              =0,
-                                              S_INIT              =1,
-                                              S_READ              =2,
-                                              S_WRITE             =3;
+   parameter             S_IDLE              =0,
+                         S_INIT              =1,
+                         S_READ              =2,
+                         S_WRITE             =3;
 
-   reg [  5 : 0 ]                             State, Next;
+   reg [  5 : 0 ]        State, Next;
    // reg     [ 24 : 0 ]              delay_u;
    // reg     [  4 : 0 ]              delay_n;
    // reg     [  2 : 0 ]              HSIZE_old;
@@ -50,16 +51,16 @@ module ahb_lite_cordic (
    // reg     [  1 : 0 ]              HTRANS_old;
    // reg     [ 31 : 0 ]              DATA;
 
-   parameter                                  HTRANS_IDLE = 2'b0;
+   parameter             HTRANS_IDLE = 2'b0;
 
    assign  HRESP  = 2'b0;
    // assign  HREADYOUT = (State == S_IDLE);
-   assign HREADYOUT=(State==S_IDLE || State==Next);
+   assign HREADYOUT= !(empty && !valid_out_interface);
 
    assign valid_in_interface=HSEL;
    assign read_fifo_en=!HWRITE;
 
-   wire                                       NeedAction = (HTRANS != HTRANS_IDLE) && HSEL;
+   wire                  NeedAction = (HTRANS != HTRANS_IDLE) && HSEL;
    // wire    NeedRefresh         = ~|delay_u;
    // wire    DelayFinished       = ~|delay_n;
    // wire    BigDelayFinished    = ~|delay_u;
@@ -77,7 +78,11 @@ module ahb_lite_cordic (
       case(State)
         S_IDLE : Next = NeedAction ? (HWRITE ? S_WRITE : S_READ): S_IDLE;
         S_INIT : Next = NeedAction ? (HWRITE ? S_WRITE : S_READ) : S_IDLE;
-        S_READ : Next = (empty && !valid_out_interface)?S_READ:S_IDLE;
+        S_READ :
+          begin
+             if (empty && !valid_out_interface) Next = S_READ;
+             else Next = NeedAction ? (HWRITE ? S_WRITE : S_READ) :S_IDLE;
+          end
         S_WRITE : Next = S_IDLE;
       endcase
    end
