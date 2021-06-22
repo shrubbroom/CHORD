@@ -17,7 +17,6 @@ def int_bin16_str_2_dec(bin16_str):
         return unsigned_dec
     else:
         return - ((2 ** 16) - unsigned_dec)
-
 def int_dec_2_bin16_str(dec):
     if (dec >= 0):
         return bin(dec)[2:].zfill(16)
@@ -303,119 +302,119 @@ upper_bound = max([x_max_error, y_max_error])
 # plt.plot(rad_2_deg(test_deg_expected) - test_deg_out)
 # plt.show()
 
-# random test
-def test_sin_cos_rand():
-    with open("x_in_reg.txt", "w") as vraw_x_in_f:
-        for i in range(512):
-            vraw_x_in_f.write('0000000100000000' +  '\n')
-    with open("y_in_reg.txt", "w") as vraw_y_in_f:
-        for i in range(512):
-            vraw_y_in_f.write('0000000100000000' + '\n')
-    with open("arctan_en_in_reg.txt", "w") as vraw_arctan_in_f:
-        for i in range(512):
-            vraw_arctan_in_f.write("0\n")
-    test_deg_in = [(random.uniform(-1, 1) * 90) for i in range(512)]
-    with open("degree_in_reg.txt", "w") as vraw_degree_in_f:
-        for i in test_deg_in:
-            vraw_degree_in_f.write(dec_2_bin16_str(i) + '\n')
-    test_deg_expected = np.array([nearest(i, deg) for i in deg_2_rad(test_deg_in)])
-    test_x_expected = np.cos(test_deg_expected)
-    test_y_expected = np.sin(test_deg_expected)
-    sp.run(["iverilog", "-o", "gen_tb_verify.vvp", "gen_tb_verify.v"],stdout=sp.DEVNULL, stderr=sp.DEVNULL)
-    sp.run(["vvp", "gen_tb_verify.vvp"], stdout=sp.DEVNULL, stderr=sp.DEVNULL )
-    test_x_out = np.empty(512)
-    test_y_out = np.empty(512)
-    with open("x_out_reg.txt", "r") as vraw_x_out_f:
-        counter = 0
-        for i in vraw_x_out_f:
-            if (counter >= 512):
-                break
-            else:
-                test_x_out[counter] = int_bin16_str_2_dec(i) / (2 ** 8)
-                counter += 1
-    with open("y_out_reg.txt", "r") as vraw_y_out_f:
-        counter = 0
-        for i in vraw_y_out_f:
-            if (counter >= 512):
-                break
-            else:
-                test_y_out[counter] = int_bin16_str_2_dec(i) / (2 ** 8)
-                counter += 1
-    return max([max(np.abs(test_y_expected - test_y_out)), max(np.abs(test_x_expected - test_x_out))])
-for i in range(10):
-    error = test_sin_cos_rand()
-    if(error > upper_bound):
-        print('Check failed, sin/cos error excceeds upper bound')
-        print('upper bound is: {upperbound}'.format(upperbound = upper_bound))
-        print('error is: {error}'.format(error = error))
-        exit(1)
-
-test_arctan_in = np.array(range(-45, 46))
-test_deg_expected = np.array([nearest(i, deg) for i in np.arctan(test_arctan_in)])
-
-with open("degree_in_reg.txt", "w") as vraw_degree_in_f:
-    for i in range(91):
-        vraw_degree_in_f.write('0000000000000000' + '\n')
-with open("x_in_reg.txt", "w") as vraw_x_in_f:
-    for i in range(91):
-        vraw_x_in_f.write('0000000100000000' +  '\n')
-with open("y_in_reg.txt", "w") as vraw_y_in_f:
-    for i in test_arctan_in:
-        vraw_y_in_f.write(dec_2_bin16_str(i) + '\n')
-with open("arctan_en_in_reg.txt", "w") as vraw_arctan_in_f:
-    for i in range(91):
-        vraw_arctan_in_f.write("1\n")
-sp.run(["iverilog", "-o", "gen_tb_verify.vvp", "gen_tb_verify.v"],stdout=sp.DEVNULL, stderr=sp.DEVNULL)
-sp.run(["vvp", "gen_tb_verify.vvp"], stdout=sp.DEVNULL, stderr=sp.DEVNULL )
-test_deg_out = np.empty(91)
-with open("degree_out_reg.txt", "r") as vraw_degree_out_f:
-    counter = 0
-    for i in vraw_degree_out_f:
-        if (counter >= 91):
-            break
-        else:
-            test_deg_out[counter] = int_bin16_str_2_dec(i) / (2 ** 8)
-            counter += 1
-upper_bound = min([max(abs(rad_2_deg(test_deg_expected) - test_deg_out)) + 1, 4])
-# uncomment this to get a plot
-# plt.plot(test_deg_expected)
-# plt.plot(deg_2_rad(test_deg_out))
-# plt.show()
-
-def test_arctan_rand():
-    with open("x_in_reg.txt", "w") as vraw_x_in_f:
-        for i in range(512):
-            vraw_x_in_f.write('0000000100000000' +  '\n')
-    with open("degree_in_reg.txt", "w") as vraw_degree_in_f:
-        for i in range(512):
-            vraw_degree_in_f.write('0000000000000000' + '\n')
-    test_arctan_in = [(random.uniform(-1, 1) * 90) for i in range(512)]
-    with open("arctan_en_in_reg.txt", "w") as vraw_arctan_in_f:
-        for i in range(512):
-            vraw_arctan_in_f.write("1\n")
-    with open("y_in_reg.txt", "w") as vraw_y_in_f:
-        for i in test_arctan_in:
-            vraw_y_in_f.write(dec_2_bin16_str(i) + '\n')
-    test_deg_expected = np.array([nearest(i, deg) for i in np.arctan(test_arctan_in)])
-    sp.run(["iverilog", "-o", "gen_tb_verify.vvp", "gen_tb_verify.v"],stdout=sp.DEVNULL, stderr=sp.DEVNULL)
-    sp.run(["vvp", "gen_tb_verify.vvp"], stdout=sp.DEVNULL, stderr=sp.DEVNULL )
-    test_deg_out = np.empty(512)
-    with open("degree_out_reg.txt", "r") as vraw_degree_out_f:
-        counter = 0
-        for i in vraw_degree_out_f:
-            if (counter >= 512):
-                break
-            else:
-                test_deg_out[counter] = int_bin16_str_2_dec(i) / (2 ** 8)
-                counter += 1
-    return max(abs(test_deg_out - rad_2_deg(test_deg_expected)))
-for i in range(10):
-    error = test_arctan_rand()
-    if(error > upper_bound):
-        print('Check failed, arctan error excceeds upper bound')
-        print('upper bound is: {upperbound}'.format(upperbound = upper_bound))
-        print('error is: {error}'.format(error = error))
-        exit(1)
+# # random test
+# def test_sin_cos_rand():
+#     with open("x_in_reg.txt", "w") as vraw_x_in_f:
+#         for i in range(512):
+#             vraw_x_in_f.write('0000000100000000' +  '\n')
+#     with open("y_in_reg.txt", "w") as vraw_y_in_f:
+#         for i in range(512):
+#             vraw_y_in_f.write('0000000100000000' + '\n')
+#     with open("arctan_en_in_reg.txt", "w") as vraw_arctan_in_f:
+#         for i in range(512):
+#             vraw_arctan_in_f.write("0\n")
+#     test_deg_in = [(random.uniform(-1, 1) * 90) for i in range(512)]
+#     with open("degree_in_reg.txt", "w") as vraw_degree_in_f:
+#         for i in test_deg_in:
+#             vraw_degree_in_f.write(dec_2_bin16_str(i) + '\n')
+#     test_deg_expected = np.array([nearest(i, deg) for i in deg_2_rad(test_deg_in)])
+#     test_x_expected = np.cos(test_deg_expected)
+#     test_y_expected = np.sin(test_deg_expected)
+#     sp.run(["iverilog", "-o", "gen_tb_verify.vvp", "gen_tb_verify.v"],stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+#     sp.run(["vvp", "gen_tb_verify.vvp"], stdout=sp.DEVNULL, stderr=sp.DEVNULL )
+#     test_x_out = np.empty(512)
+#     test_y_out = np.empty(512)
+#     with open("x_out_reg.txt", "r") as vraw_x_out_f:
+#         counter = 0
+#         for i in vraw_x_out_f:
+#             if (counter >= 512):
+#                 break
+#             else:
+#                 test_x_out[counter] = int_bin16_str_2_dec(i) / (2 ** 8)
+#                 counter += 1
+#     with open("y_out_reg.txt", "r") as vraw_y_out_f:
+#         counter = 0
+#         for i in vraw_y_out_f:
+#             if (counter >= 512):
+#                 break
+#             else:
+#                 test_y_out[counter] = int_bin16_str_2_dec(i) / (2 ** 8)
+#                 counter += 1
+#     return max([max(np.abs(test_y_expected - test_y_out)), max(np.abs(test_x_expected - test_x_out))])
+# for i in range(10):
+#     error = test_sin_cos_rand()
+#     if(error > upper_bound):
+#         print('Check failed, sin/cos error excceeds upper bound')
+#         print('upper bound is: {upperbound}'.format(upperbound = upper_bound))
+#         print('error is: {error}'.format(error = error))
+#         exit(1)
+# 
+# test_arctan_in = np.array(range(-45, 46))
+# test_deg_expected = np.array([nearest(i, deg) for i in np.arctan(test_arctan_in)])
+# 
+# with open("degree_in_reg.txt", "w") as vraw_degree_in_f:
+#     for i in range(91):
+#         vraw_degree_in_f.write('0000000000000000' + '\n')
+# with open("x_in_reg.txt", "w") as vraw_x_in_f:
+#     for i in range(91):
+#         vraw_x_in_f.write('0000000100000000' +  '\n')
+# with open("y_in_reg.txt", "w") as vraw_y_in_f:
+#     for i in test_arctan_in:
+#         vraw_y_in_f.write(dec_2_bin16_str(i) + '\n')
+# with open("arctan_en_in_reg.txt", "w") as vraw_arctan_in_f:
+#     for i in range(91):
+#         vraw_arctan_in_f.write("1\n")
+# sp.run(["iverilog", "-o", "gen_tb_verify.vvp", "gen_tb_verify.v"],stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+# sp.run(["vvp", "gen_tb_verify.vvp"], stdout=sp.DEVNULL, stderr=sp.DEVNULL )
+# test_deg_out = np.empty(91)
+# with open("degree_out_reg.txt", "r") as vraw_degree_out_f:
+#     counter = 0
+#     for i in vraw_degree_out_f:
+#         if (counter >= 91):
+#             break
+#         else:
+#             test_deg_out[counter] = int_bin16_str_2_dec(i) / (2 ** 8)
+#             counter += 1
+# upper_bound = min([max(abs(rad_2_deg(test_deg_expected) - test_deg_out)) + 1, 4])
+# # uncomment this to get a plot
+# # plt.plot(test_deg_expected)
+# # plt.plot(deg_2_rad(test_deg_out))
+# # plt.show()
+# 
+# def test_arctan_rand():
+#     with open("x_in_reg.txt", "w") as vraw_x_in_f:
+#         for i in range(512):
+#             vraw_x_in_f.write('0000000100000000' +  '\n')
+#     with open("degree_in_reg.txt", "w") as vraw_degree_in_f:
+#         for i in range(512):
+#             vraw_degree_in_f.write('0000000000000000' + '\n')
+#     test_arctan_in = [(random.uniform(-1, 1) * 90) for i in range(512)]
+#     with open("arctan_en_in_reg.txt", "w") as vraw_arctan_in_f:
+#         for i in range(512):
+#             vraw_arctan_in_f.write("1\n")
+#     with open("y_in_reg.txt", "w") as vraw_y_in_f:
+#         for i in test_arctan_in:
+#             vraw_y_in_f.write(dec_2_bin16_str(i) + '\n')
+#     test_deg_expected = np.array([nearest(i, deg) for i in np.arctan(test_arctan_in)])
+#     sp.run(["iverilog", "-o", "gen_tb_verify.vvp", "gen_tb_verify.v"],stdout=sp.DEVNULL, stderr=sp.DEVNULL)
+#     sp.run(["vvp", "gen_tb_verify.vvp"], stdout=sp.DEVNULL, stderr=sp.DEVNULL )
+#     test_deg_out = np.empty(512)
+#     with open("degree_out_reg.txt", "r") as vraw_degree_out_f:
+#         counter = 0
+#         for i in vraw_degree_out_f:
+#             if (counter >= 512):
+#                 break
+#             else:
+#                 test_deg_out[counter] = int_bin16_str_2_dec(i) / (2 ** 8)
+#                 counter += 1
+#     return max(abs(test_deg_out - rad_2_deg(test_deg_expected)))
+# for i in range(10):
+#     error = test_arctan_rand()
+#     if(error > upper_bound):
+#         print('Check failed, arctan error excceeds upper bound')
+#         print('upper bound is: {upperbound}'.format(upperbound = upper_bound))
+#         print('error is: {error}'.format(error = error))
+#         exit(1)
 
 # upper_bound = min([0.1, max(abs(test_deg_expected - deg_2_rad(test_deg_out)))])
 

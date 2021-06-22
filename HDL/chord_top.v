@@ -1,5 +1,3 @@
-`include "./bus/bus_top.v"
-`include "./core/ex_top.v"
 module chord_top(
                  input [31:0]  HADDR,
                  input [2:0]   HBURST,

@@ -55,10 +55,11 @@ module ahb_lite_cordic
 
    assign  HRESP  = 2'b0;
    // assign  HREADYOUT = (State == S_IDLE);
-   assign HREADYOUT= !(State = S_READ && empty && !valid_out_interface);
+   // HREADYOUT= !((State == S_READ) && empty && (!valid_out_interface));
+   assign HREADYOUT = !((State == S_READ) && empty);
 
-   assign valid_in_interface=HSEL;
-   assign read_fifo_en=!HWRITE;
+   assign valid_in_interface=(State == S_WRITE);
+   assign read_fifo_en=(State == S_READ);
 
    wire                  NeedAction = (HTRANS != HTRANS_IDLE) && HSEL;
    // wire    NeedRefresh         = ~|delay_u;
@@ -80,10 +81,10 @@ module ahb_lite_cordic
         S_INIT : Next = NeedAction ? (HWRITE ? S_WRITE : S_READ) : S_IDLE;
         S_READ :
           begin
-             if (empty && !valid_out_interface) Next = S_READ;
+             if (empty) Next = S_READ;
              else Next = NeedAction ? (HWRITE ? S_WRITE : S_READ) :S_IDLE;
           end
-        S_WRITE : Next = S_IDLE;
+        S_WRITE : Next = NeedAction ? (HWRITE ? S_WRITE : S_READ) : S_IDLE;
       endcase
    end
 
@@ -93,9 +94,10 @@ module ahb_lite_cordic
       //data
       case(State)
         default       :   in_interface = 32'b0; // 32'b0
-        S_READ        :   HRDATA = out_fifo;
+        // S_READ        :   HRDATA = out_fifo;
         S_WRITE       :   in_interface = HWDATA;
       endcase
+      HRDATA = out_fifo;
    end
 
 endmodule //ahb_lite_cordic

@@ -33,9 +33,9 @@ module interface_input #(
    assign degree_in_interface = in_interface[15:0];
    assign tan_in_interface = in_interface[15:0];
    assign arctan_en_in_interface = in_interface[16];
-   parameter                                                       ANGLE_N90=-16'sd90;
-   parameter                                                       ANGLE_P90=16'sd90;
-   parameter                                                       ANGLE_P180=16'sd180;
+   parameter                                                       ANGLE_N90=-16'sd23040;
+   parameter                                                       ANGLE_P90=16'sd23040;
+   parameter                                                       ANGLE_P180=16'sd46080;
 
    // degree_in_interface range: from -180° to 180°
 
