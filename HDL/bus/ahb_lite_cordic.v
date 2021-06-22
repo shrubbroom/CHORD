@@ -19,7 +19,7 @@ module ahb_lite_cordic (
 
                         //Transfer response
                         output                HREADYOUT,//1=transfer finish
-                        output                HRESP, //Transfer success or failure
+                        output [1:0]          HRESP, //Transfer success or failure
                         //Slave Data
                         output reg [ 31 : 0 ] HRDATA,
 
@@ -52,7 +52,7 @@ module ahb_lite_cordic (
 
    parameter                                  HTRANS_IDLE = 2'b0;
 
-   assign  HRESP  = 1'b0;
+   assign  HRESP  = 2'b0;
    // assign  HREADYOUT = (State == S_IDLE);
    assign HREADYOUT=(State==S_IDLE || State==Next);
 
