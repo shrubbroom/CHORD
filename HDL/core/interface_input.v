@@ -27,6 +27,9 @@ module interface_input #(
                            output wire                             arctan_en_in,
                            output wire                             valid_in
                            );
+   wire signed [INPUT_WIDTH - 1 : 0]                               degree_in_interface;
+   wire [INPUT_WIDTH - 1 : 0]                                      tan_in_interface;
+   wire                                                            arctan_en_in_interface;
    assign degree_in_interface = in_interface[15:0];
    assign tan_in_interface = in_interface[15:0];
    assign arctan_en_in_interface = in_interface[16];

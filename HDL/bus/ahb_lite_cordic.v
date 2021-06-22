@@ -55,7 +55,7 @@ module ahb_lite_cordic
 
    assign  HRESP  = 2'b0;
    // assign  HREADYOUT = (State == S_IDLE);
-   assign HREADYOUT= !(empty && !valid_out_interface);
+   assign HREADYOUT= !(State = S_READ && empty && !valid_out_interface);
 
    assign valid_in_interface=HSEL;
    assign read_fifo_en=!HWRITE;
