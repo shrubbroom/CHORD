@@ -23,7 +23,7 @@ module interface_output#(
                            // output wire signed [OUTPUT_WIDTH - 1 : 0] y_out_interface,
                            // output wire                               arctan_en_out_interface,
                            // output wire                               valid_out_interface
-                           output [31:0]                            interface_out,
+                           output [31:0]                            out_interface,
                            output                                   valid_out_interface
                            );
    assign x_out_interface = (flip_out)?(-x_out):(x_out);
@@ -32,6 +32,6 @@ module interface_output#(
    assign arctan_en_out_interface = arctan_en_out;
 
    assign valid_out_interface = valid_out;
-   assign interface_out[15:0] = arctan_en_out_interface ? degree_out_interface : x_out_interface;
-   assign interface_out[31:16] = arctan_en_out_interface ? 16'b0 : y_out_interface;
+   assign out_interface[15:0] = arctan_en_out_interface ? degree_out_interface : x_out_interface;
+   assign out_interface[31:16] = arctan_en_out_interface ? 16'b0 : y_out_interface;
 endmodule // interface_outpu
