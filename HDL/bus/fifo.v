@@ -1,4 +1,4 @@
-module fifo(input clk,rst,read_fifo_en,valid_out_interface,
+module fifo(input clk,reset,read_fifo_en,valid_out_interface,
             input  [31:0]  out_interface,
             output [31:0] out_fifo,
             output 	     empty);
@@ -16,8 +16,8 @@ integer 		     i;
 
 assign out_fifo=mem[rp[3:0]];
 
-always@(posedge clk or negedge rst) begin
-    if (!rst) begin
+always@(posedge clk or negedge reset) begin
+    if (!reset) begin
         for(i=16;i!=0;i=i-1)
           mem[i-1]<=0;
         rp<=0;
@@ -43,8 +43,8 @@ always@(posedge clk or negedge rst) begin
             rp<=rp+1;
           end
 
-      end // else rst
-  end // always@ (posedge clk or negedge rst)
+      end // else reset
+  end // always@ (posedge clk or negedge reset)
 
 always @(*) begin
     //determine signal full and empty and half_full
