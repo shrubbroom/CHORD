@@ -11,10 +11,12 @@ module interface_input #(
                          parameter ITERATION_WORD_FRAC_WIDTH = 20,
                          parameter FLIP_FLAG_WIDTH = 1
                          )(
-                           input wire signed [INPUT_WIDTH - 1 : 0] degree_in_interface,
-                           input wire                              arctan_en_in_interface,
+                           input wire [31 : 0]                     interface_in,
                            input wire                              valid_in_interface,
-                           input wire [INPUT_WIDTH - 1 : 0]        tan_in_interface,
+
+                           // input wire signed [INPUT_WIDTH - 1 : 0] degree_in_interface,
+                           // input wire                              arctan_en_in_interface,
+                           // input wire [INPUT_WIDTH - 1 : 0]        tan_in_interface,
                            // input wire [INPUT_WIDTH - 1 : 0]        x_in_interface,
                            // input wire [INPUT_WIDTH - 1 : 0]        y_in_interface,
 
@@ -25,6 +27,9 @@ module interface_input #(
                            output wire                             arctan_en_in,
                            output wire                             valid_in
                            );
+   assign degree_in_interface = interface_in[15:0];
+   assign tan_in_interface = interface_in[15:0];
+   assign arctan_en_in_interface = interface_in[16];
    parameter                                                       ANGLE_N90=-16'sd90;
    parameter                                                       ANGLE_P90=16'sd90;
    parameter                                                       ANGLE_P180=16'sd180;
