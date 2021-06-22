@@ -17,20 +17,15 @@ module ex_top#(
                )(
                  /*AUTOINPUT*/
                  // Beginning of automatic inputs (from unused autoinst inputs)
-                 input           arctan_en_in_interface, // To interface_input of interface_input.v
                  input           clk,                    // To pipeline of pipeline.v
-                 input signed [INPUT_WIDTH-1:0] degree_in_interface,// To interface_input of interface_input.v
+                 input [31:0]    in_interface,           // To interface_input of interface_input.v
                  input           reset,                  // To pipeline of pipeline.v
-                 input [INPUT_WIDTH-1:0] tan_in_interface,// To interface_input of interface_input.v
                  input           valid_in_interface,     // To interface_input of interface_input.v
                  // End of automatics
                  /*AUTOOUTPUT*/
                  // Beginning of automatic outputs (from unused autoinst outputs)
-                 output          arctan_en_out_interface,// From interface_output of interface_output.v
-                 output signed [OUTPUT_WIDTH-1:0] degree_out_interface,// From interface_output of interface_output.v
-                 output          valid_out_interface,    // From interface_output of interface_output.v
-                 output signed [OUTPUT_WIDTH-1:0] x_out_interface,// From interface_output of interface_output.v
-                 output signed [OUTPUT_WIDTH-1:0] y_out_interface// From interface_output of interface_output.v
+                 output [31:0]   out_interface,          // From interface_output of interface_output.v
+                 output          valid_out_interface    // From interface_output of interface_output.v
                  // End of automatics
                  );
    /*AUTOWIRE*/
@@ -48,48 +43,82 @@ module ex_top#(
    wire [INPUT_WIDTH-1:0] y_in;                 // From interface_input of interface_input.v
    wire signed [OUTPUT_WIDTH-1:0] y_out;        // From pipeline of pipeline.v
    // End of automatics
-   pipeline pipeline(/*AUTOINST*/
-                     // Outputs
-                     .degree_out        (degree_out[OUTPUT_WIDTH-1:0]),
-                     .x_out             (x_out[OUTPUT_WIDTH-1:0]),
-                     .y_out             (y_out[OUTPUT_WIDTH-1:0]),
-                     .flip_out          (flip_out[FLIP_FLAG_WIDTH-1:0]),
-                     .arctan_en_out     (arctan_en_out),
-                     .valid_out         (valid_out),
-                     // Inputs
-                     .clk               (clk),
-                     .reset             (reset),
-                     .degree_in         (degree_in[INPUT_WIDTH-1:0]),
-                     .x_in              (x_in[INPUT_WIDTH-1:0]),
-                     .y_in              (y_in[INPUT_WIDTH-1:0]),
-                     .flip_in           (flip_in[FLIP_FLAG_WIDTH-1:0]),
-                     .arctan_en_in      (arctan_en_in),
-                     .valid_in          (valid_in));
-   interface_input interface_input(/*AUTOINST*/
-                                   // Outputs
-                                   .degree_in           (degree_in[OUTPUT_WIDTH-1:0]),
-                                   .x_in                (x_in[INPUT_WIDTH-1:0]),
-                                   .y_in                (y_in[INPUT_WIDTH-1:0]),
-                                   .flip_in             (flip_in[FLIP_FLAG_WIDTH-1:0]),
-                                   .arctan_en_in        (arctan_en_in),
-                                   .valid_in            (valid_in),
-                                   // Inputs
-                                   .degree_in_interface (degree_in_interface[INPUT_WIDTH-1:0]),
-                                   .arctan_en_in_interface(arctan_en_in_interface),
-                                   .valid_in_interface  (valid_in_interface),
-                                   .tan_in_interface    (tan_in_interface[INPUT_WIDTH-1:0]));
-   interface_output interface_output(/*AUTOINST*/
-                                     // Outputs
-                                     .degree_out_interface(degree_out_interface[OUTPUT_WIDTH-1:0]),
-                                     .x_out_interface   (x_out_interface[OUTPUT_WIDTH-1:0]),
-                                     .y_out_interface   (y_out_interface[OUTPUT_WIDTH-1:0]),
-                                     .arctan_en_out_interface(arctan_en_out_interface),
-                                     .valid_out_interface(valid_out_interface),
-                                     // Inputs
-                                     .degree_out        (degree_out[OUTPUT_WIDTH-1:0]),
-                                     .x_out             (x_out[OUTPUT_WIDTH-1:0]),
-                                     .y_out             (y_out[OUTPUT_WIDTH-1:0]),
-                                     .flip_out          (flip_out[FLIP_FLAG_WIDTH-1:0]),
-                                     .arctan_en_out     (arctan_en_out),
-                                     .valid_out         (valid_out));
+   pipeline #(/*AUTOINSTPARAM*/
+              // Parameters
+              .INPUT_WIDTH              (INPUT_WIDTH),
+              .OUTPUT_WIDTH             (OUTPUT_WIDTH),
+              .INPUT_INT_WIDTH          (INPUT_INT_WIDTH),
+              .INPUT_FRAC_WIDTH         (INPUT_FRAC_WIDTH),
+              .OUTPUT_INT_WIDTH         (OUTPUT_INT_WIDTH),
+              .OUTPUT_FRAC_WIDTH        (OUTPUT_FRAC_WIDTH),
+              .ITERATION_NUMBER         (ITERATION_NUMBER),
+              .ITERATION_WORD_WIDTH     (ITERATION_WORD_WIDTH),
+              .ITERATION_WORD_INT_WIDTH (ITERATION_WORD_INT_WIDTH),
+              .ITERATION_WORD_FRAC_WIDTH(ITERATION_WORD_FRAC_WIDTH),
+              .FLIP_FLAG_WIDTH          (FLIP_FLAG_WIDTH))
+   pipeline(/*AUTOINST*/
+            // Outputs
+            .degree_out                 (degree_out[OUTPUT_WIDTH-1:0]),
+            .x_out                      (x_out[OUTPUT_WIDTH-1:0]),
+            .y_out                      (y_out[OUTPUT_WIDTH-1:0]),
+            .flip_out                   (flip_out[FLIP_FLAG_WIDTH-1:0]),
+            .arctan_en_out              (arctan_en_out),
+            .valid_out                  (valid_out),
+            // Inputs
+            .clk                        (clk),
+            .reset                      (reset),
+            .degree_in                  (degree_in[INPUT_WIDTH-1:0]),
+            .x_in                       (x_in[INPUT_WIDTH-1:0]),
+            .y_in                       (y_in[INPUT_WIDTH-1:0]),
+            .flip_in                    (flip_in[FLIP_FLAG_WIDTH-1:0]),
+            .arctan_en_in               (arctan_en_in),
+            .valid_in                   (valid_in));
+   interface_input #(/*AUTOINSTPARAM*/
+                     // Parameters
+                     .INPUT_WIDTH       (INPUT_WIDTH),
+                     .OUTPUT_WIDTH      (OUTPUT_WIDTH),
+                     .INPUT_INT_WIDTH   (INPUT_INT_WIDTH),
+                     .INPUT_FRAC_WIDTH  (INPUT_FRAC_WIDTH),
+                     .OUTPUT_INT_WIDTH  (OUTPUT_INT_WIDTH),
+                     .OUTPUT_FRAC_WIDTH (OUTPUT_FRAC_WIDTH),
+                     .ITERATION_NUMBER  (ITERATION_NUMBER),
+                     .ITERATION_WORD_WIDTH(ITERATION_WORD_WIDTH),
+                     .ITERATION_WORD_INT_WIDTH(ITERATION_WORD_INT_WIDTH),
+                     .ITERATION_WORD_FRAC_WIDTH(ITERATION_WORD_FRAC_WIDTH),
+                     .FLIP_FLAG_WIDTH   (FLIP_FLAG_WIDTH))
+   interface_input(/*AUTOINST*/
+                   // Outputs
+                   .degree_in           (degree_in[OUTPUT_WIDTH-1:0]),
+                   .x_in                (x_in[INPUT_WIDTH-1:0]),
+                   .y_in                (y_in[INPUT_WIDTH-1:0]),
+                   .flip_in             (flip_in[FLIP_FLAG_WIDTH-1:0]),
+                   .arctan_en_in        (arctan_en_in),
+                   .valid_in            (valid_in),
+                   // Inputs
+                   .in_interface        (in_interface[31:0]),
+                   .valid_in_interface  (valid_in_interface));
+   interface_output #(/*AUTOINSTPARAM*/
+                      // Parameters
+                      .INPUT_WIDTH      (INPUT_WIDTH),
+                      .OUTPUT_WIDTH     (OUTPUT_WIDTH),
+                      .INPUT_INT_WIDTH  (INPUT_INT_WIDTH),
+                      .INPUT_FRAC_WIDTH (INPUT_FRAC_WIDTH),
+                      .OUTPUT_INT_WIDTH (OUTPUT_INT_WIDTH),
+                      .OUTPUT_FRAC_WIDTH(OUTPUT_FRAC_WIDTH),
+                      .ITERATION_NUMBER (ITERATION_NUMBER),
+                      .ITERATION_WORD_WIDTH(ITERATION_WORD_WIDTH),
+                      .ITERATION_WORD_INT_WIDTH(ITERATION_WORD_INT_WIDTH),
+                      .ITERATION_WORD_FRAC_WIDTH(ITERATION_WORD_FRAC_WIDTH),
+                      .FLIP_FLAG_WIDTH  (FLIP_FLAG_WIDTH))
+   interface_output(/*AUTOINST*/
+                    // Outputs
+                    .out_interface      (out_interface[31:0]),
+                    .valid_out_interface(valid_out_interface),
+                    // Inputs
+                    .degree_out         (degree_out[OUTPUT_WIDTH-1:0]),
+                    .x_out              (x_out[OUTPUT_WIDTH-1:0]),
+                    .y_out              (y_out[OUTPUT_WIDTH-1:0]),
+                    .flip_out           (flip_out[FLIP_FLAG_WIDTH-1:0]),
+                    .arctan_en_out      (arctan_en_out),
+                    .valid_out          (valid_out));
 endmodule // ex_top
