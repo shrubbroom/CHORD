@@ -29,5 +29,7 @@ jobs:
       run: yosys -p "hierarchy -check; proc;" top.v
       working-directory: ${{env.core}}
     - name: verify core
-      run: python pipeline_verify.py
+      run: | 
+        cd verify
+        python pipeline_verify.py
       working-directory: ${{env.core}}
