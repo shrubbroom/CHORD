@@ -86,7 +86,7 @@ We provide driver program written in `C` for CHORD. The `drv_chord.h` provides f
 int16_t chord_cos(int16_t); // scalar
 int16_t chord_sin(int16_t); // scalar
 int16_t chord_arctan(int16_t); // scalar
-void chord_cos_sin_v(int16_t*, int32_t*, int); // vector
+void chord_cos_sin_v(int16_t*, int16_t*, int16_t*, int); // vector
 void chord_arctan_v(int16_t*, int16_t*, int);  // vector
 ```
 
