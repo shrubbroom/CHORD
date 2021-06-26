@@ -94,4 +94,4 @@ Note that the vector length should not exceed `CHORD_BUFFER_SIZE`.
 
 # Reference and Thanks
 
-This is the course project of MR334 (VLSI 数字通信原理与设计, 2021).
+This is the course project of MR334 (VLSI 数字通信原理与设计, 2021) by [shrubbroom](oracle0133@gmail.com) and [miracle3310](miracle3310@sjtu.edu.cn). For the report see [CHORD.pdf](./report/CHORD.pdf).
