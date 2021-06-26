@@ -52,14 +52,20 @@ module ahb_lite_cordic
    // reg     [ 31 : 0 ]              DATA;
 
    parameter             HTRANS_IDLE = 2'b0;
+   reg [31 : 0]          HADDR_LATCH;
+   always @ (posedge HCLK or negedge HRESETn)
+     if (~HRESETn)
+       HADDR_LATCH <= 0;
+     else
+       HADDR_LATCH <= HADDR;
 
    assign  HRESP  = 2'b0;
    // assign  HREADYOUT = (State == S_IDLE);
    // HREADYOUT= !((State == S_READ) && empty && (!valid_out_interface));
-   assign HREADYOUT = !((State == S_READ) && empty);
-
+   // assign HREADYOUT = !((State == S_READ) && empty);
+   assign HREADYOUT = 1;
    assign valid_in_interface=(State == S_WRITE);
-   assign read_fifo_en=(State == S_READ);
+   assign read_fifo_en=(State == S_READ) & (HADDR_LATCH != 32'h40010000);
 
    wire                  NeedAction = (HTRANS != HTRANS_IDLE) && HSEL;
    // wire    NeedRefresh         = ~|delay_u;
@@ -79,11 +85,7 @@ module ahb_lite_cordic
       case(State)
         S_IDLE : Next = NeedAction ? (HWRITE ? S_WRITE : S_READ): S_IDLE;
         S_INIT : Next = NeedAction ? (HWRITE ? S_WRITE : S_READ) : S_IDLE;
-        S_READ :
-          begin
-             if (empty) Next = S_READ;
-             else Next = NeedAction ? (HWRITE ? S_WRITE : S_READ) :S_IDLE;
-          end
+        S_READ : Next = NeedAction ? (HWRITE ? S_WRITE : S_READ) :S_IDLE;
         S_WRITE : Next = NeedAction ? (HWRITE ? S_WRITE : S_READ) : S_IDLE;
       endcase
    end
@@ -97,7 +99,7 @@ module ahb_lite_cordic
         // S_READ        :   HRDATA = out_fifo;
         S_WRITE       :   in_interface = HWDATA;
       endcase
-      HRDATA = out_fifo;
+      HRDATA = (HADDR_LATCH == 32'h40010000)?(empty?0:1):out_fifo;
    end
 
 endmodule //ahb_lite_cordic

@@ -1,0 +1,3 @@
+[submodule "FPGA"]
+	path = FPGA
+	url = git@github.com:shrubbroom/CHORD_wujian100_impl.git
