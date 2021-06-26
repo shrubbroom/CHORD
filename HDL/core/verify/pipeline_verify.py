@@ -339,7 +339,7 @@ def test_sin_cos_rand():
 for i in range(10):
     error = test_sin_cos_rand()
     if(error > upper_bound):
-        print('Check failed, sin/cos error excceeds upper bound')
+        print('Check failed, sin/cos error exceeds upper bound')
         print('upper bound is: {upperbound}'.format(upperbound = upper_bound))
         print('error is: {error}'.format(error = error))
         exit(1)
@@ -402,7 +402,7 @@ def test_arctan_rand():
 for i in range(10):
     error = test_arctan_rand()
     if(error > upper_bound):
-        print('Check failed, arctan error excceeds upper bound')
+        print('Check failed, arctan error exceeds upper bound')
         print('upper bound is: {upperbound}'.format(upperbound = upper_bound))
         print('error is: {error}'.format(error = error))
         exit(1)

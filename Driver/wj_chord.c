@@ -15,6 +15,7 @@
 #define CHORD_IN_ADDR  0x40010004
 #define CHORD_OUT_ADDR 0x40010004
 #define CHORD_SIG_ADDR 0x40010000
+#define CHORD_BUFFER_SIZE 512
 
 void chord_cos_sin_v(int16_t *deg, int16_t *c_cos, int16_t *c_sin, int length) {
   for (int i = 0; i < length; i = i + 1) {

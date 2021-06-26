@@ -56,7 +56,7 @@ $ ./pipeline_verify.py
 The program return 0 without any output if no error happens in the test. Otherwise, if the code doesn't pass the test, the output will be like
 
 ```bash
-Check failed, arctan error excceeds upper bound
+Check failed, arctan error exceeds upper bound
 upper bound is: 0.0621
 error is: 0.1
 ```
