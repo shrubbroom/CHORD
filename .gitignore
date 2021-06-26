@@ -1,6 +1,6 @@
 *.vvp
 *.vcd
-*.txt
+# *.txt
 #*
 gen*
 HDL/build
